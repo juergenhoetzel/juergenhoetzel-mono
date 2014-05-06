@@ -1,0 +1,43 @@
+# $Id: pkgbuild-mode.el,v 1.23 2007/10/20 16:02:14 juergen Exp $
+# Maintainer: Juergen Hoetzel <juergen@archlinux.org>
+pkgname=monodevelop
+pkgver=4.3.4
+pkgrel=1
+pkgdesc="An IDE primarily designed for C# and other .NET languages"
+arch=('any')
+url="http://www.monodevelop.com"
+license=('GPL')
+depends=('mono>=2.10.8' 'mono-addins>=0.6.2' 'gnome-sharp' 'desktop-file-utils' 'hicolor-icon-theme')
+source=("git+https://github.com/mono/monodevelop.git" 0001-Makefile-ASSEMBLY-.mdb-depends-on-ASSEMBLY.patch)
+makedepends=('rsync' 'git')
+install=monodevelop.install
+md5sums=('SKIP' 'f42a9059efa8d6e46bee30cd70dbd3b6')
+
+TAG=$pkgname-$pkgver
+
+prepare() {
+  cd $pkgname
+  git checkout -b $TAG $TAG
+  git submodule update --init --recursive
+  patch -p1 -i ../../0001-Makefile-ASSEMBLY-.mdb-depends-on-ASSEMBLY.patch
+  cat >>profiles/default <<EOF
+main
+EOF
+}
+
+build() {
+  cd $pkgname
+  ./configure --prefix=/usr --profile=core
+  make
+}
+
+package() {
+  cd $pkgname
+
+  make DESTDIR="$pkgdir/" install
+  # delete conflicting files
+  find $pkgdir/usr/share/mime/ -type f -delete
+
+}
+
+# vim:set ts=2 sw=2 et:

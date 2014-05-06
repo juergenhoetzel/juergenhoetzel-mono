@@ -1,0 +1,339 @@
+From 11f598519cb18f3038881080f8d3bf256e6568d5 Mon Sep 17 00:00:00 2001
+From: Juergen Hoetzel <juergen@archlinux.org>
+Date: Tue, 6 May 2014 18:12:10 +0200
+Subject: [PATCH] Makefile: (ASSEMBLY).mdb depends on $(ASSEMBLY)
+
+Because the Compiler produces multiple output files (ASSEMBLY +
+ASSEMBLY.mdb) this rule is required for parallel builds.
+
+Also force a rebuild of ASSEMBLY if ASSEMBLY.mdb is missing
+---
+ .../MonoDevelop.CodeAnalysis.Gendarme/Makefile.am                   | 6 ++++++
+ .../MonoDevelop.CodeAnalysis.Smokey/Makefile.am                     | 6 ++++++
+ .../MonoDevelop.CodeAnalysis/MonoDevelop.CodeAnalysis/Makefile.am   | 6 ++++++
+ .../MonoDevelop.Database.CodeGenerator/Makefile.am                  | 6 ++++++
+ .../MonoDevelop.Database.Components/Makefile.am                     | 6 ++++++
+ .../MonoDevelop.Database.ConnectionManager/Makefile.am              | 6 ++++++
+ .../MonoDevelop.Database/MonoDevelop.Database.Designer/Makefile.am  | 6 ++++++
+ extras/MonoDevelop.Database/MonoDevelop.Database.Query/Makefile.am  | 6 ++++++
+ .../MonoDevelop.Database/MonoDevelop.Database.Sql.MySql/Makefile.am | 6 ++++++
+ .../MonoDevelop.Database.Sql.Npgsql/Makefile.am                     | 6 ++++++
+ .../MonoDevelop.Database.Sql.SqlServer/Makefile.am                  | 6 ++++++
+ .../MonoDevelop.Database.Sql.Sqlite/Makefile.am                     | 6 ++++++
+ extras/MonoDevelop.Database/MonoDevelop.Database.Sql/Makefile.am    | 6 ++++++
+ .../MonoDevelop.Profiling.HeapBuddy/Makefile.am                     | 6 ++++++
+ .../MonoDevelop.Profiling.HeapShot/Makefile.am                      | 6 ++++++
+ extras/MonoDevelop.Profiling/MonoDevelop.Profiling/Makefile.am      | 6 ++++++
+ extras/NemerleBinding/Makefile.am                                   | 6 ++++++
+ extras/ValaBinding/Makefile.am                                      | 6 ++++++
+ 18 files changed, 108 insertions(+)
+
+diff --git a/extras/MonoDevelop.CodeAnalysis/MonoDevelop.CodeAnalysis.Gendarme/Makefile.am b/extras/MonoDevelop.CodeAnalysis/MonoDevelop.CodeAnalysis.Gendarme/Makefile.am
+index 5e36371..78a7f7b 100644
+--- a/extras/MonoDevelop.CodeAnalysis/MonoDevelop.CodeAnalysis.Gendarme/Makefile.am
++++ b/extras/MonoDevelop.CodeAnalysis/MonoDevelop.CodeAnalysis.Gendarme/Makefile.am
+@@ -29,6 +29,12 @@ all: $(ASSEMBLY)
+ 
+ LOCAL_PKGCONFIG=PKG_CONFIG_PATH=../../../local-config:$$PKG_CONFIG_PATH
+ 
++$(ASSEMBLY).mdb: $(ASSEMBLY)
++	@if test -f $@; then :; else \
++		rm -f $(ASSEMBLY); \
++		$(MAKE) $(AM_MAKEFLAGS) $(ASSEMBLY); \
++	fi
++
+ $(ASSEMBLY): $(build_sources) $(build_resources)
+ 	mkdir -p $(ADDIN_BUILD)
+ 	$(LOCAL_PKGCONFIG) $(CSC) $(CSC_FLAGS) $(REFS) $(build_resources:%=/resource:%) $(build_sources) -out:$@ -target:library
+diff --git a/extras/MonoDevelop.CodeAnalysis/MonoDevelop.CodeAnalysis.Smokey/Makefile.am b/extras/MonoDevelop.CodeAnalysis/MonoDevelop.CodeAnalysis.Smokey/Makefile.am
+index 504f81e..a9ff310 100644
+--- a/extras/MonoDevelop.CodeAnalysis/MonoDevelop.CodeAnalysis.Smokey/Makefile.am
++++ b/extras/MonoDevelop.CodeAnalysis/MonoDevelop.CodeAnalysis.Smokey/Makefile.am
+@@ -29,6 +29,12 @@ all: $(ASSEMBLY)
+ 
+ LOCAL_PKGCONFIG=PKG_CONFIG_PATH=../../../local-config:$$PKG_CONFIG_PATH
+ 
++$(ASSEMBLY).mdb: $(ASSEMBLY)
++	@if test -f $@; then :; else \
++		rm -f $(ASSEMBLY); \
++		$(MAKE) $(AM_MAKEFLAGS) $(ASSEMBLY); \
++	fi
++
+ $(ASSEMBLY): $(build_sources) $(build_resources)
+ 	mkdir -p $(ADDIN_BUILD)
+ 	$(LOCAL_PKGCONFIG) $(CSC) $(CSC_FLAGS) $(REFS) $(build_resources:%=/resource:%) $(build_sources) -out:$@ -target:library
+diff --git a/extras/MonoDevelop.CodeAnalysis/MonoDevelop.CodeAnalysis/Makefile.am b/extras/MonoDevelop.CodeAnalysis/MonoDevelop.CodeAnalysis/Makefile.am
+index 4a9954d..05d642c 100644
+--- a/extras/MonoDevelop.CodeAnalysis/MonoDevelop.CodeAnalysis/Makefile.am
++++ b/extras/MonoDevelop.CodeAnalysis/MonoDevelop.CodeAnalysis/Makefile.am
+@@ -47,6 +47,12 @@ all: $(ASSEMBLY)
+ 
+ LOCAL_PKGCONFIG=PKG_CONFIG_PATH=../../../local-config:$$PKG_CONFIG_PATH
+ 
++$(ASSEMBLY).mdb: $(ASSEMBLY)
++	@if test -f $@; then :; else \
++		rm -f $(ASSEMBLY); \
++		$(MAKE) $(AM_MAKEFLAGS) $(ASSEMBLY); \
++	fi
++
+ $(ASSEMBLY): $(build_sources) $(build_resources)
+ 	mkdir -p $(ADDIN_BUILD)
+ 	$(LOCAL_PKGCONFIG) $(CSC) $(CSC_FLAGS) $(REFS) $(build_resources:%=/resource:%) $(build_sources) -out:$@ -target:library
+diff --git a/extras/MonoDevelop.Database/MonoDevelop.Database.CodeGenerator/Makefile.am b/extras/MonoDevelop.Database/MonoDevelop.Database.CodeGenerator/Makefile.am
+index 73ba7aa..51ebd46 100644
+--- a/extras/MonoDevelop.Database/MonoDevelop.Database.CodeGenerator/Makefile.am
++++ b/extras/MonoDevelop.Database/MonoDevelop.Database.CodeGenerator/Makefile.am
+@@ -29,6 +29,12 @@ RES =  \
+ 
+ all: $(ASSEMBLY)
+ 
++$(ASSEMBLY).mdb: $(ASSEMBLY)
++	@if test -f $@; then :; else \
++		rm -f $(ASSEMBLY); \
++		$(MAKE) $(AM_MAKEFLAGS) $(ASSEMBLY); \
++	fi
++
+ $(ASSEMBLY): $(build_sources) $(build_resources)
+ 	mkdir -p $(ADDIN_BUILD)
+ 	$(CSC) $(CSC_FLAGS) $(REFS) $(build_resources:%=/resource:%) $(build_sources) -out:$@ -target:library
+diff --git a/extras/MonoDevelop.Database/MonoDevelop.Database.Components/Makefile.am b/extras/MonoDevelop.Database/MonoDevelop.Database.Components/Makefile.am
+index 052c911..6b36658 100644
+--- a/extras/MonoDevelop.Database/MonoDevelop.Database.Components/Makefile.am
++++ b/extras/MonoDevelop.Database/MonoDevelop.Database.Components/Makefile.am
+@@ -82,6 +82,12 @@ RES =  \
+ 
+ all: $(ASSEMBLY)
+ 
++$(ASSEMBLY).mdb: $(ASSEMBLY)
++	@if test -f $@; then :; else \
++		rm -f $(ASSEMBLY); \
++		$(MAKE) $(AM_MAKEFLAGS) $(ASSEMBLY); \
++	fi
++
+ $(ASSEMBLY): $(build_sources) $(build_resources)
+ 	mkdir -p $(ADDIN_BUILD)
+ 	$(CSC) $(CSC_FLAGS) $(REFS) $(build_resources:%=/resource:%) $(build_sources) -out:$@ -target:library
+diff --git a/extras/MonoDevelop.Database/MonoDevelop.Database.ConnectionManager/Makefile.am b/extras/MonoDevelop.Database/MonoDevelop.Database.ConnectionManager/Makefile.am
+index eac24b5..cc7f449 100644
+--- a/extras/MonoDevelop.Database/MonoDevelop.Database.ConnectionManager/Makefile.am
++++ b/extras/MonoDevelop.Database/MonoDevelop.Database.ConnectionManager/Makefile.am
+@@ -54,6 +54,12 @@ RES =  \
+ 
+ all: $(ASSEMBLY)
+ 
++$(ASSEMBLY).mdb: $(ASSEMBLY)
++	@if test -f $@; then :; else \
++		rm -f $(ASSEMBLY); \
++		$(MAKE) $(AM_MAKEFLAGS) $(ASSEMBLY); \
++	fi
++
+ $(ASSEMBLY): $(build_sources) $(build_resources)
+ 	mkdir -p $(ADDIN_BUILD)
+ 	$(CSC) $(CSC_FLAGS) $(REFS) $(build_resources:%=/resource:%) $(build_sources) -out:$@ -target:library
+diff --git a/extras/MonoDevelop.Database/MonoDevelop.Database.Designer/Makefile.am b/extras/MonoDevelop.Database/MonoDevelop.Database.Designer/Makefile.am
+index 987ffc8..30913f3 100644
+--- a/extras/MonoDevelop.Database/MonoDevelop.Database.Designer/Makefile.am
++++ b/extras/MonoDevelop.Database/MonoDevelop.Database.Designer/Makefile.am
+@@ -49,6 +49,12 @@ RES =  \
+ 
+ all: $(ASSEMBLY) $(ADDIN_BUILD)
+ 
++$(ASSEMBLY).mdb: $(ASSEMBLY)
++	@if test -f $@; then :; else \
++		rm -f $(ASSEMBLY); \
++		$(MAKE) $(AM_MAKEFLAGS) $(ASSEMBLY); \
++	fi
++
+ $(ASSEMBLY): $(build_sources) $(build_resources)
+ 	mkdir -p $(ADDIN_BUILD)
+ 	$(CSC) $(CSC_FLAGS) $(REFS) $(build_resources:%=/resource:%) $(build_sources) -out:$@ -target:library
+diff --git a/extras/MonoDevelop.Database/MonoDevelop.Database.Query/Makefile.am b/extras/MonoDevelop.Database/MonoDevelop.Database.Query/Makefile.am
+index 9f7f625..5976aee 100644
+--- a/extras/MonoDevelop.Database/MonoDevelop.Database.Query/Makefile.am
++++ b/extras/MonoDevelop.Database/MonoDevelop.Database.Query/Makefile.am
+@@ -57,6 +57,12 @@ DATA_FILE_BUILD = $(addprefix $(ADDIN_BUILD)/, $(DATA_FILES))
+ 
+ all: $(ASSEMBLY)
+ 
++$(ASSEMBLY).mdb: $(ASSEMBLY)
++	@if test -f $@; then :; else \
++		rm -f $(ASSEMBLY); \
++		$(MAKE) $(AM_MAKEFLAGS) $(ASSEMBLY); \
++	fi
++
+ $(ASSEMBLY): $(build_sources) $(build_resources)
+ 	mkdir -p $(ADDIN_BUILD)
+ 	$(CSC) $(CSC_FLAGS) $(REFS) $(build_resources:%=/resource:%) $(build_sources) -out:$@ -target:library
+diff --git a/extras/MonoDevelop.Database/MonoDevelop.Database.Sql.MySql/Makefile.am b/extras/MonoDevelop.Database/MonoDevelop.Database.Sql.MySql/Makefile.am
+index 44af58f..f2030b7 100644
+--- a/extras/MonoDevelop.Database/MonoDevelop.Database.Sql.MySql/Makefile.am
++++ b/extras/MonoDevelop.Database/MonoDevelop.Database.Sql.MySql/Makefile.am
+@@ -51,6 +51,12 @@ $(BUILD_MYSQL_FILES): $(SRC_MYSQL_FILES)
+ 	mkdir -p $(ADDIN_BUILD)
+ 	cp $(SRC_MYSQL_FILES) $(ADDIN_BUILD)/.
+ 
++$(ASSEMBLY).mdb: $(ASSEMBLY)
++	@if test -f $@; then :; else \
++		rm -f $(ASSEMBLY); \
++		$(MAKE) $(AM_MAKEFLAGS) $(ASSEMBLY); \
++	fi
++
+ $(ASSEMBLY): $(build_sources) $(build_resources)
+ 	mkdir -p $(ADDIN_BUILD)
+ 	$(CSC) $(CSC_FLAGS) $(REFS) $(build_resources:%=/resource:%) $(build_sources) -out:$@ -target:library
+diff --git a/extras/MonoDevelop.Database/MonoDevelop.Database.Sql.Npgsql/Makefile.am b/extras/MonoDevelop.Database/MonoDevelop.Database.Sql.Npgsql/Makefile.am
+index f60e87c..ef4d473 100644
+--- a/extras/MonoDevelop.Database/MonoDevelop.Database.Sql.Npgsql/Makefile.am
++++ b/extras/MonoDevelop.Database/MonoDevelop.Database.Sql.Npgsql/Makefile.am
+@@ -49,6 +49,12 @@ else
+ all:
+ endif
+ 
++$(ASSEMBLY).mdb: $(ASSEMBLY)
++	@if test -f $@; then :; else \
++		rm -f $(ASSEMBLY); \
++		$(MAKE) $(AM_MAKEFLAGS) $(ASSEMBLY); \
++	fi
++
+ $(ASSEMBLY): $(build_sources) $(build_resources)
+ 	mkdir -p $(ADDIN_BUILD)
+ 	$(CSC) $(CSC_FLAGS) $(REFS) $(build_resources:%=/resource:%) $(build_sources) -out:$@ -target:library
+diff --git a/extras/MonoDevelop.Database/MonoDevelop.Database.Sql.SqlServer/Makefile.am b/extras/MonoDevelop.Database/MonoDevelop.Database.Sql.SqlServer/Makefile.am
+index 0890cbe..e1d3e2b 100644
+--- a/extras/MonoDevelop.Database/MonoDevelop.Database.Sql.SqlServer/Makefile.am
++++ b/extras/MonoDevelop.Database/MonoDevelop.Database.Sql.SqlServer/Makefile.am
+@@ -47,6 +47,12 @@ else
+ all:
+ endif
+ 
++$(ASSEMBLY).mdb: $(ASSEMBLY)
++	@if test -f $@; then :; else \
++		rm -f $(ASSEMBLY); \
++		$(MAKE) $(AM_MAKEFLAGS) $(ASSEMBLY); \
++	fi
++
+ $(ASSEMBLY): $(build_sources) $(build_resources)
+ 	mkdir -p $(ADDIN_BUILD)
+ 	$(CSC) $(CSC_FLAGS) $(REFS) $(build_resources:%=/resource:%) $(build_sources) -out:$@ -target:library
+diff --git a/extras/MonoDevelop.Database/MonoDevelop.Database.Sql.Sqlite/Makefile.am b/extras/MonoDevelop.Database/MonoDevelop.Database.Sql.Sqlite/Makefile.am
+index d2c5bf2..b4df067 100644
+--- a/extras/MonoDevelop.Database/MonoDevelop.Database.Sql.Sqlite/Makefile.am
++++ b/extras/MonoDevelop.Database/MonoDevelop.Database.Sql.Sqlite/Makefile.am
+@@ -38,6 +38,12 @@ else
+ all:
+ endif
+ 
++$(ASSEMBLY).mdb: $(ASSEMBLY)
++	@if test -f $@; then :; else \
++		rm -f $(ASSEMBLY); \
++		$(MAKE) $(AM_MAKEFLAGS) $(ASSEMBLY); \
++	fi
++
+ $(ASSEMBLY): $(build_sources) $(build_resources)
+ 	mkdir -p $(ADDIN_BUILD)
+ 	$(CSC) $(CSC_FLAGS) $(REFS) $(build_resources:%=/resource:%) $(build_sources) -out:$@ -target:library
+diff --git a/extras/MonoDevelop.Database/MonoDevelop.Database.Sql/Makefile.am b/extras/MonoDevelop.Database/MonoDevelop.Database.Sql/Makefile.am
+index 140650e..c217c4b 100644
+--- a/extras/MonoDevelop.Database/MonoDevelop.Database.Sql/Makefile.am
++++ b/extras/MonoDevelop.Database/MonoDevelop.Database.Sql/Makefile.am
+@@ -161,6 +161,12 @@ RES = MonoDevelop.Database.Sql.addin.xml
+ 
+ all: $(ASSEMBLY)
+ 
++$(ASSEMBLY).mdb: $(ASSEMBLY)
++	@if test -f $@; then :; else \
++		rm -f $(ASSEMBLY); \
++		$(MAKE) $(AM_MAKEFLAGS) $(ASSEMBLY); \
++	fi
++
+ $(ASSEMBLY): $(build_sources) $(build_resources)
+ 	mkdir -p $(ADDIN_BUILD)
+ 	$(CSC) $(CSC_FLAGS) $(REFS) $(build_resources:%=/resource:%) $(build_sources) -out:$@ -target:library
+diff --git a/extras/MonoDevelop.Profiling/MonoDevelop.Profiling.HeapBuddy/Makefile.am b/extras/MonoDevelop.Profiling/MonoDevelop.Profiling.HeapBuddy/Makefile.am
+index 8a3c46d..672cbd2 100644
+--- a/extras/MonoDevelop.Profiling/MonoDevelop.Profiling.HeapBuddy/Makefile.am
++++ b/extras/MonoDevelop.Profiling/MonoDevelop.Profiling.HeapBuddy/Makefile.am
+@@ -37,6 +37,12 @@ RES =  \
+ 
+ all: $(ASSEMBLY)
+ 
++$(ASSEMBLY).mdb: $(ASSEMBLY)
++	@if test -f $@; then :; else \
++		rm -f $(ASSEMBLY); \
++		$(MAKE) $(AM_MAKEFLAGS) $(ASSEMBLY); \
++	fi
++
+ $(ASSEMBLY): $(build_sources) $(build_resources)
+ 	mkdir -p $(ADDIN_BUILD)
+ 	$(CSC) $(CSC_FLAGS) $(REFS) $(build_resources:%=/resource:%) $(build_sources) -out:$@ -target:library
+diff --git a/extras/MonoDevelop.Profiling/MonoDevelop.Profiling.HeapShot/Makefile.am b/extras/MonoDevelop.Profiling/MonoDevelop.Profiling.HeapShot/Makefile.am
+index 6f2544c..40f8528 100644
+--- a/extras/MonoDevelop.Profiling/MonoDevelop.Profiling.HeapShot/Makefile.am
++++ b/extras/MonoDevelop.Profiling/MonoDevelop.Profiling.HeapShot/Makefile.am
+@@ -31,6 +31,12 @@ RES =  \
+ 
+ all: $(ASSEMBLY)
+ 
++$(ASSEMBLY).mdb: $(ASSEMBLY)
++	@if test -f $@; then :; else \
++		rm -f $(ASSEMBLY); \
++		$(MAKE) $(AM_MAKEFLAGS) $(ASSEMBLY); \
++	fi
++
+ $(ASSEMBLY): $(build_sources) $(build_resources)
+ 	mkdir -p $(ADDIN_BUILD)
+ 	$(CSC) $(CSC_FLAGS) $(REFS) $(build_resources:%=/resource:%) $(build_sources) -out:$@ -target:library
+diff --git a/extras/MonoDevelop.Profiling/MonoDevelop.Profiling/Makefile.am b/extras/MonoDevelop.Profiling/MonoDevelop.Profiling/Makefile.am
+index 717971d..267b92e 100644
+--- a/extras/MonoDevelop.Profiling/MonoDevelop.Profiling/Makefile.am
++++ b/extras/MonoDevelop.Profiling/MonoDevelop.Profiling/Makefile.am
+@@ -53,6 +53,12 @@ RES =  \
+ 
+ all: $(ASSEMBLY)
+ 
++$(ASSEMBLY).mdb: $(ASSEMBLY)
++	@if test -f $@; then :; else \
++		rm -f $(ASSEMBLY); \
++		$(MAKE) $(AM_MAKEFLAGS) $(ASSEMBLY); \
++	fi
++
+ $(ASSEMBLY): $(build_sources) $(build_resources)
+ 	mkdir -p $(ADDIN_BUILD)
+ 	$(CSC) $(CSC_FLAGS) $(REFS) $(build_resources:%=/resource:%) $(build_sources) -out:$@ -target:library
+diff --git a/extras/NemerleBinding/Makefile.am b/extras/NemerleBinding/Makefile.am
+index 1e93a2b..e2a168b 100644
+--- a/extras/NemerleBinding/Makefile.am
++++ b/extras/NemerleBinding/Makefile.am
+@@ -56,6 +56,12 @@ else
+ all:
+ endif
+ 
++$(ASSEMBLY).mdb: $(ASSEMBLY)
++	@if test -f $@; then :; else \
++		rm -f $(ASSEMBLY); \
++		$(MAKE) $(AM_MAKEFLAGS) $(ASSEMBLY); \
++	fi
++
+ $(ASSEMBLY): $(build_sources) $(build_resources)
+ 	mkdir -p $(ADDIN_BUILD)
+ 	$(CSC) $(CSC_FLAGS) $(REFS) $(build_resources:%=/resource:%) \
+diff --git a/extras/ValaBinding/Makefile.am b/extras/ValaBinding/Makefile.am
+index eb50d3c..1096513 100644
+--- a/extras/ValaBinding/Makefile.am
++++ b/extras/ValaBinding/Makefile.am
+@@ -85,6 +85,12 @@ all: $(ASSEMBLY)
+ 
+ LOCAL_PKGCONFIG=PKG_CONFIG_PATH=../../local-config:$$PKG_CONFIG_PATH
+ 
++$(ASSEMBLY).mdb: $(ASSEMBLY)
++	@if test -f $@; then :; else \
++		rm -f $(ASSEMBLY); \
++		$(MAKE) $(AM_MAKEFLAGS) $(ASSEMBLY); \
++	fi
++
+ $(ASSEMBLY): $(build_sources) $(build_resources)
+ 	mkdir -p $(ADDIN_BUILD)
+ 	$(LOCAL_PKGCONFIG) $(CSC) $(CSC_FLAGS) -debug -out:$@ -target:library $(REFS) \
+-- 
+1.9.2
+
