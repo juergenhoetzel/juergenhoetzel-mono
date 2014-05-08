@@ -1,0 +1,36 @@
+# $Id: pkgbuild-mode.el,v 1.23 2007/10/20 16:02:14 juergen Exp $
+# Maintainer: Juergen Hoetzel <juergen@archlinux.org>
+pkgname=nant
+pkgver=0.93.2014.04.13
+pkgrel=1
+pkgdesc="A .NET-based build tool"
+arch=('any')
+url="http://nant.sourceforge.net"
+license=('GPL')
+depends=('mono>=2.10.8')
+source=("git+https://github.com/nant/nant.git"  0001-Fix-parallel-build.patch)
+makedepends=('rsync' 'git')
+md5sums=('SKIP' 99aaa86813b770cc88686da2add30507)
+
+SHA1=7906a4d7e903b0ee26c466fefa58d7ba730f534c
+
+prepare() {
+  cd $pkgname
+  git checkout -b $SHA1 $SHA1
+  patch -i ../../0001-Fix-parallel-build.patch
+}
+
+build() {
+  cd $pkgname
+  pwd
+  MAKEFLAGS="-j1"
+  make
+}
+
+package() {
+  cd $pkgname
+
+  make prefix=/usr DESTDIR="$pkgdir/" install
+}
+
+# vim:set ts=2 sw=2 et:

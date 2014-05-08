@@ -1,0 +1,25 @@
+From 7ae0a7facf392b4199ac2c07bf4a0d5bfb1c74ac Mon Sep 17 00:00:00 2001
+From: Juergen Hoetzel <juergen@archlinux.org>
+Date: Thu, 8 May 2014 21:39:00 +0200
+Subject: [PATCH] Fix parallel build
+
+---
+ Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Makefile b/Makefile
+index 7e1dc47..2901810 100644
+--- a/Makefile
++++ b/Makefile
+@@ -72,7 +72,7 @@ NANT = $(MONO) bootstrap/NAnt.exe $(NANT_DEBUG)
+ 
+ all: bootstrap build-nant
+ 
+-build-nant: 
++build-nant: bootstrap
+ 	$(NANT) $(TARGET_FRAMEWORK) -f:NAnt.build build
+ 
+ clean:
+-- 
+1.9.2
+
