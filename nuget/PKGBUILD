@@ -10,8 +10,7 @@ license=('apache')
 groups=("juergenhoetzel-mono")
 depends=('mono>=2.10.2')
 source=(git+https://git01.codeplex.com/nuget nuget.sh)
-md5sums=('SKIP'
-         'f1b9722013c091487e2aeb69c68aab80')
+md5sums=('SKIP' '551b8d0925aeca72282cae8fd69cb4d4')
 
 prepare() {
   cd $pkgname
