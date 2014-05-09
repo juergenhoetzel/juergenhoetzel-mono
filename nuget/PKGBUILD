@@ -1,0 +1,34 @@
+# $Id: pkgbuild-mode.el,v 1.23 2007/10/20 16:02:14 juergen Exp $
+# Maintainer: Juergen Hoetzel <juergen@archlinux.org>
+pkgname=nuget
+pkgver=2.8.2
+pkgrel=1
+pkgdesc="A free and open source package manager for the .NET Framework"
+arch=('any')
+url="http://nuget.org/"
+license=('apache')
+groups=("juergenhoetzel-mono")
+depends=('mono>=2.10.2')
+source=(git+https://git01.codeplex.com/nuget nuget.sh)
+md5sums=('SKIP'
+         'f1b9722013c091487e2aeb69c68aab80')
+
+prepare() {
+  cd $pkgname
+  git checkout $pkgver
+}
+
+build() {
+  cd $pkgname
+  xbuild Build/Build.proj /p:Configuration="Mono Release" /t:GoMono
+}
+
+package() {
+  install -Dm555 $srcdir/nuget.sh "$pkgdir/usr/bin/nuget"
+  cd $pkgname/src/CommandLine/bin/Release
+  for dll in {*.dll,*.exe}; do 
+    install -D $dll "$pkgdir/usr/lib/$pkgname/${dll}"
+  done
+}
+
+# vim:set ts=2 sw=2 et:
