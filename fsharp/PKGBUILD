@@ -1,5 +1,5 @@
 pkgname=fsharp
-pkgver=3.1.1.6
+pkgver=3.1.1.11
 pkgrel=1
 pkgdesc="An ML based functional language integrated with the .NET platform."
 arch=('any')
@@ -9,7 +9,7 @@ groups=("juergenhoetzel-mono")
 depends=('mono>=2.10.2')
 #install=
 source=("https://github.com/fsharp/fsharp/archive/$pkgver.tar.gz")
-md5sums=('751a37f6a4f1823a7edebbe4d9a8fc71')
+md5sums=('3b6bcee46cc622b9afa38173b95d7462')
 
 prepare() {
   cd $srcdir/$pkgname-$pkgver
